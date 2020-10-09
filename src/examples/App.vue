@@ -3,7 +3,8 @@
   <k-header class="kv-header">
     <!-- logo -->
     <div class="logo">
-      <img src="./assets/logo.png" />
+      <!-- <img src="./assets/logo.png" /> -->
+      <span>kview</span>
     </div>
     <div class="right">
       <!-- 顶部导航 -->
@@ -15,10 +16,8 @@
         </template>
       </k-nav>
       <!-- 换肤、语言选择 -->
-      <div>
-        <k-button type="text">语言</k-button>
-        <k-button type="text">主题</k-button>
-      </div>
+      <k-button type="text">语言</k-button>
+      <k-button type="text">主题</k-button>
     </div>
 
   </k-header>
@@ -38,18 +37,7 @@ export default {
     }
     const navList = [
       { id: 1, name: '首页', path: '/' },
-      {
-        id: 2, name: '学习', path: '/doc', children: [
-          { id: 21, name: '指南' }
-        ]
-      },
-      {
-        id: 3, name: '组件', path: '/components', children: [
-          { id: 31, name: '按钮', path: '/button' },
-          { id: 32, name: '头部', path: '/header' },
-          { id: 33, name: '菜单', path: '/nav' }
-        ]
-      }
+      { id: 3, name: '组件', path: '/components' }
     ]
 
     return {
@@ -63,7 +51,6 @@ export default {
 <style lang="scss">
 @import "./assets/css/reset.scss";
 @import "./assets/css/textshadow.css";
-@import "./assets/icon/icon.css";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -86,10 +73,13 @@ export default {
 .kv-header {
   justify-content: space-between;
   .logo {
-    width: 200px;
+    width: 75px;
     height: 48px;
     display: flex;
     align-items: center;
+    color: #00b0bf;
+    font-size: 24px;
+    font-weight: bold;
     img {
       height: 24px;
     }

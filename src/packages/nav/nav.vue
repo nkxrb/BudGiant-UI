@@ -49,7 +49,7 @@ export default {
     key: { type: String, default: "id" },
     children: { type: String, default: "children" },
   },
-  setup(props, ctx) {
+  setup() {
     // 当前选中的导航
     let curNavItem: Ref<any> = ref("");
 

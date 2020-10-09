@@ -1,9 +1,13 @@
-import IconGitee from '/@packages/icon/svgs/gitee.vue'
+import IconGitee from './svgs/gitee.vue'
+import IconGithub from './svgs/github.vue'
+import IconKview from './svgs/kview.vue'
+import IconStudy from './svgs/study.vue'
+import IconK from './svgs/k.vue'
 
-const icons = {
-  IconGitee
-}
-
-export default {
-  IconGitee
+export {
+  IconKview,
+  IconGitee,
+  IconGithub,
+  IconStudy,
+  IconK,
 }

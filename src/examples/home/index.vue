@@ -2,62 +2,55 @@
   <div class="home">
     <!-- logo -->
     <div class="logo">
-      <span class="color-logo text-outline">KVIEW</span>
-    </div>
-
-    <!-- 圆环 -->
-    <div>
-      <svg viewBox="0 0 415 150"
-           width="100%"
-           height="100%">
-        <path d="M 20,20 "
-              p-id="1489"></path>
-      </svg>
-    </div>
-
-    <!-- 特性概括 -->
-    <div class="feature">
-      <span style="color: #ff9b00;">简洁</span>
-      <span> | </span>
-      <span style="color: #b7f557;">高效</span>
+      <h1>KVIEW</h1>
+      <p>一款适用于学习的前端组件库</p>
+      <p></p>
     </div>
 
     <!-- start -->
     <div class="start">
-      <k-button type="text">开始-></k-button>
-      <k-button type="text">
-        <!-- <icon-gitee></icon-gitee> -->
-        <div class="icon-gitee"></div>
-        <div class="">GITEE</div>
+      <k-button type="primary"
+                href="/components"
+                round>
+        <icon-k class="btn-icon"></icon-k>
+        <span>开始学习</span>
       </k-button>
-      <k-button type="text">
-        <div class="icon-github"></div>
-        <div>GITHUB</div>
+      <k-button type="default"
+                href="https://gitee.com/nkxrb/KView-UI"
+                round>
+        <icon-gitee class="btn-icon"></icon-gitee>
+        <span>GITEE</span>
+      </k-button>
+      <k-button type="default"
+                href="https://github.com/nkxrb/KView-UI"
+                round>
+        <icon-github class="btn-icon"></icon-github>
+        <span>GITHUB</span>
       </k-button>
     </div>
   </div>
 </template>
 
-<script>s
-import { IconGitee } from '/@packages/icon'
+<script>
+import { IconK, IconGitee, IconGithub } from '@packages/icon'
 export default {
-  // components: { IconGitee }
+  components: { IconK, IconGitee, IconGithub }
 }
 </script>
 
 <style lang="scss" scoped>
-.icon-github1 {
-  content: url("../assets/icon/github.svg");
-  width: 16px;
-  height: 16px;
-  // background-image: url("../assets/advert.png");
-  color: red;
-}
 .home {
   height: 100%;
+  font-size: 16px;
   .logo {
-    margin: 15vh 20px 30px;
-    font-size: 8rem;
+    text-align: center;
+    padding: 90px 0;
+    max-height: 600px;
+
+    h1 {
+      font-size: 45px;
+      color: #00b0bf;
+    }
   }
   .color-logo {
     color: #37cbd4;
@@ -70,14 +63,15 @@ export default {
   .start {
     display: flex;
     justify-content: center;
-    button {
-      margin: 15px;
-      div {
-        height: 32px;
-        display: inline-block;
-        line-height: 32px;
-        margin: 0 6px;
-      }
+    a {
+      width: 116px;
+    }
+    a + a {
+      margin-left: 12px;
+    }
+    .btn-icon {
+      height: 24px;
+      margin-right: 6px;
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <ul class="k-nav">
+    <ul class="k-nav-tree">
       <li v-for="item in data"
           :class="{'cur': clickItem == item[key]}"
           :key="item[key]"
@@ -16,7 +16,7 @@
 
           <!-- 若存在子类 -->
           <nav v-if="item.children && item.children.length>0 && hoverItem == item[key]"
-               class="k-nav-item">
+               class="k-nav-tree-item">
             <ul>
               <li v-for="child in item.children"
                   :key="child[key]">
@@ -49,7 +49,7 @@ export default {
     key: { type: String, default: "id" },
     children: { type: String, default: "children" },
   },
-  setup(props, ctx) {
+  setup(props: Object, ctx: Object) {
     // 当前选中的导航
     let curNavItem: Ref<any> = ref("");
 

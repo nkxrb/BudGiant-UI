@@ -10,9 +10,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node scripts/build.js vue -f global -d && jest --runInBand",
-    "dev": "vite --mode=development",
-    "build": "vite build --mode=production"
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "prepublishOnly": "npm run build",
   "files": [
@@ -37,14 +37,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^14.10.1",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "jest": "^25.4.0",
     "sass": "^1.26.10",
+    "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
-    "vite": "^1.0.0-rc.4",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0-alpha.6",
-    "vuex": "^4.0.0-alpha.1"
+    "vue-property-decorator": "^8.4.2",
+    "vue-router": "^4.0.0-beta.13",
+    "vuex": "^4.0.0-beta.4"
   }
 }
