@@ -1,7 +1,9 @@
 <template>
   <div class="components">
     <div class="left">
-      <k-nav-tree :data="navData"></k-nav-tree>
+      <k-tree :data="navData"
+              @click-item="clickItemFn">
+      </k-tree>
     </div>
     <div class="right">
       <router-view></router-view>
@@ -9,17 +11,30 @@
   </div>
 </template>
 
-<script>
-import navData from './navtree.json'
+<script lang="ts">
+declare interface NavTreeItem {
+  path: string;
+}
+
+import router from "../router";
+import { reactive } from "vue";
+import navData from "./navtree";
 export default {
-  name: 'components',
-  setup () {
+  name: "components",
+  setup() {
+    // 当前选中的树节点
+
+    const clickItemFn = (item: NavTreeItem) => {
+      console.log("clickItem", item);
+      router.push({ path: item.path });
+    };
 
     return {
-      navData
-    }
-  }
-}
+      navData,
+      clickItemFn,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

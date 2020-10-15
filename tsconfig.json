@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "dist",
     "sourceMap": false,
     "target": "esnext",
@@ -32,6 +32,7 @@
     "src/examples/**/*.ts",
     "src/packages/**/*.ts",
     "src/examples/**/*.vue",
+    "src/examples/**/*.json",
     "src/packages/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"

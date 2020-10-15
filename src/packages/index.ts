@@ -3,13 +3,13 @@ import { ComponentOptions } from 'vue'
 import Button from './button/button.vue'
 import Header from './header/header.vue'
 import Nav from './nav/nav.vue'
-import NavTree from './nav/navtree.vue'
+import Tree from './tree/tree.vue'
 
 const components: ComponentOptions[] = [
   Header,
   Button,
   Nav,
-  NavTree,
+  Tree,
 ]
 
 // vue3.0的组件全局注册方法
@@ -26,5 +26,5 @@ export {
   Header,
   Button,
   Nav,
-  NavTree
+  Tree
 }
