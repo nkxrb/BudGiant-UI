@@ -1,25 +1,22 @@
-# KView-UI
-基于vue3.0实现的一套UI组件库，新手向开发，以磨练技术，提升技术为主，有兴趣的 欢迎一起讨论哦
+# nkxrb-vue
 
-### 使用到的技术
-- 语言环境 nodejs  12.18.2
-- 类型推导 typescript 
-- 前置依赖 vue  ^3.x
-- 打包工具 vite  ^1.0.0-rc4
-- 测试工具 jest 
-- 兼容配置 babel （暂不考虑，后面会补上）
+#### 介绍
+追求极简操作，用数据编写页面，减少人为失误操作，组件化，一次编写，多处使用
 
+#### 软件架构
+基于element-ui进行二次封装，专为后台管理系统打造的一款快速开发组件，更容易的列表、更简单的表单
 
-### 目录结构
-- docs 说明文档
-- examples 使用样例
-- libs 最终的打包文件目录
-- packages UI库源码根目录
-- plugins 使用到的插件
-- test 测试文件
-- .eslintrc.js 代码格式约束文件
-- .gitignore git提交忽略文件
-- package.json 基本信息、执行命令、依赖包配置文件
-- README.md 项目说明文件
-- tsconfig.json TypeScript配置文件
-- vite.config.ts vite打包工具配置文件
+#### 安装教程
+
+1.  npm install kview-vue
+
+#### 使用说明
+
+1.  待补充
+
+#### 参与贡献
+
+1.  Fork 本仓库
+2.  新建 Feat_xxx 分支
+3.  提交代码
+4.  新建 Pull Request
