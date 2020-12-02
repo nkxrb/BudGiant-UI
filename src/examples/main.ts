@@ -7,10 +7,13 @@ import "@packages/theme.scss";
 import "@packages/base.scss";
 
 // 全局引入kview-ui 组件库
-import KViewUI from '../packages'
+import { Button } from '../packages/index'
+
+import { DatePicker } from 'ant-design-vue';
+
 
 const app = createApp(App)
 
-KViewUI(app)
-
+app.use(Button)
+// app.use(DatePicker);
 app.use(router).mount('#app');

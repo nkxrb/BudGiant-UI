@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "outDir": "dist",
-    "sourceMap": false,
+    "sourceMap": true,
     "target": "esnext",
     "module": "esnext",
     "strict": true,
@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "node"
+      "webpack-env"
     ],
     "paths": {
       "@/*": [
@@ -29,11 +29,8 @@
     ]
   },
   "include": [
-    "src/examples/**/*.ts",
-    "src/packages/**/*.ts",
-    "src/examples/**/*.vue",
-    "src/examples/**/*.json",
-    "src/packages/**/*.vue",
+    "src/**/*.ts",
+    "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],

@@ -1,93 +1,111 @@
 <template>
-  <ul class="k-tree">
-    <li class="k-tree-item"
-        v-for="item in data"
-        :class="{'cur': clickItem == item[key]}"
-        :key="item[key]"
-        @click.stop="mouseclick(item)"
-        @mouseover="mouseover(item[key])"
-        @mouseleave="mouseleave(item[key])">
-      <!-- 插槽 -->
-      <slot v-if="$slots.default"
-            :item="item"></slot>
-      <span v-else>{{item.name}}</span>
+	<ul class="k-tree">
+		<li :class="`k-tree-item ${clickItem == item?'cur':''}`"
+				:level="level"
+				v-for="item in data"
+				:key="item"
+				@mouseover="mouseover(item)"
+				@mouseleave="mouseleave(item)">
+			<!-- 插槽 -->
+			<span v-if="$slots.default">
+				<slot :item="item"></slot>
+			</span>
+			<span v-else
+						@click.stop="mouseclick(item)">{{item.label}}</span>
 
-      <!-- 若存在子类 -->
-      <k-tree v-if="item.children && item.children.length>0 && clickItem == item[key]"
-              :data="item.children"
-              :key="key"
-              :children="children"
-              @click-item="mouseclick"></k-tree>
-    </li>
-  </ul>
+			<!-- 若存在子类 -->
+			<k-tree v-if="item.expand"
+							:level="level+1"
+							:data="item.children"
+							:key="key"
+							:children="children"
+							@click-item="mouseclick"></k-tree>
+		</li>
+	</ul>
 </template>
 <script lang="ts">
-import { ref, Ref, SetupContext, EmitsOptions } from "vue";
+import {
+	defineComponent,
+	ref,
+	Ref,
+	reactive,
+	SetupContext,
+	EmitsOptions,
+	PropType,
+} from "vue";
 
-export default {
-  name: "kTree",
-  props: {
-    data: {
-      type: Array,
-      default: () => {
-        return [];
-      },
-    },
-    key: { type: String, default: "id" },
-    children: { type: String, default: "children" },
-  },
-  setup(props: Object, ctx: SetupContext) {
-    // 当前选中的树节点
-    let curNavItem: Ref<any> = ref("");
+// 在此处声明传入的数据类型
+export interface KTreeItem {
+	key?: number | string;
+	label?: string;
+	expand?: boolean;
+	children?: KTreeItem[];
+}
 
-    // 鼠标点击事件
-    const mouseclickState = mouseclickEvent(props, ctx);
+export default defineComponent({
+	name: "kTree",
+	props: {
+		data: { type: Array as PropType<KTreeItem[]>, required: true },
+		level: { type: Number, default: 0 },
+		key: { type: String, default: "id" },
+		children: { type: String, default: "children" },
+	},
+	setup(props: Object, ctx: SetupContext) {
+		// 当前选中的树节点
+		let curNavItem: Ref<KTreeItem | null> = ref(null);
 
-    // 鼠标悬浮事件
-    const mouseoverState = mouseoverEvent();
+		// 鼠标点击事件
+		const mouseclickState = mouseclickEvent(props, ctx);
 
-    return {
-      curNavItem,
-      ...mouseclickState,
-      ...mouseoverState,
-    };
-  },
-};
+		// 鼠标悬浮事件
+		const mouseoverState = mouseoverEvent();
+
+		return {
+			curNavItem,
+			...mouseclickState,
+			...mouseoverState,
+		};
+	},
+});
 
 // 鼠标点击事件
 const mouseclickEvent = (props: any, ctx: SetupContext) => {
-  let clickItem: Ref<any> = ref("");
-  const mouseclick = (item: any) => {
-    clickItem.value = item[props.key];
-    ctx.emit("click-item", item);
-    // e.stopPropagation();
-  };
-  return {
-    clickItem,
-    mouseclick,
-  };
+	let clickItem = reactive({});
+	const mouseclick = (item: KTreeItem) => {
+		// 取消上一个展开的
+
+		item.expand;
+		clickItem = item;
+		ctx.emit("click-item", item);
+	};
+	return {
+		clickItem,
+		mouseclick,
+	};
 };
+
+const expandAllNode = () => {};
 
 // 鼠标悬浮事件
 const mouseoverEvent = () => {
-  // 鼠标悬停的导航
-  let hoverItem: Ref<any> = ref("");
+	// 鼠标悬停的导航
+	let hoverItem: Ref<any> = ref("");
 
-  const mouseover = (itemId: any) => {
-    hoverItem.value = itemId;
-  };
-  const mouseleave = (itemId: any) => {
-    hoverItem.value = "";
-  };
-  return {
-    hoverItem,
-    mouseover,
-    mouseleave,
-  };
+	const mouseover = (itemId: any) => {
+		hoverItem.value = itemId;
+	};
+	const mouseleave = (itemId: any) => {
+		hoverItem.value = "";
+	};
+	return {
+		hoverItem,
+		mouseover,
+		mouseleave,
+	};
 };
 </script>
 <style lang="scss" scoped>
 .k-tree-item span {
-  cursor: pointer;
+	cursor: pointer;
 }
 </style> 

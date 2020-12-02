@@ -2,6 +2,7 @@
   <div class="components">
     <div class="left">
       <k-tree :data="navData"
+              item-class="tree-item"
               @click-item="clickItemFn">
       </k-tree>
     </div>
@@ -17,9 +18,9 @@ declare interface NavTreeItem {
 }
 
 import router from "../router";
-import { reactive } from "vue";
+import { defineComponent, reactive } from "vue";
 import navData from "./navtree";
-export default {
+export default defineComponent({
   name: "components",
   setup() {
     // 当前选中的树节点
@@ -34,10 +35,10 @@ export default {
       clickItemFn,
     };
   },
-};
+});
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .components {
   display: flex;
   min-height: calc(100vh - 50px);
@@ -45,9 +46,19 @@ export default {
     padding: 20px;
     width: 200px;
     min-height: 100%;
+    box-shadow: 4px 4px 10px 0px #b1b1b1;
   }
   .right {
     width: calc(100% - 200px);
+  }
+  li[level="0"] {
+    padding: 5px;
+    text-align: left;
+    font-weight: bold;
+  }
+  li[level="1"] {
+    padding: 5px 15px 0;
+    font-weight: 400;
   }
 }
 </style>
