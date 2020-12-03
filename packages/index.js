@@ -1,7 +1,6 @@
 // 导入组件
-import './style/my-element-ui.scss'
-
 import HelloNkxrb from './hellonkxrb/index.js'
+import NkForm from './form/index.js'
 
 // 存储组件列表
 const components = [
@@ -28,3 +27,5 @@ export default {
 
 // 以下是具体的组件列表
 export { HelloNkxrb }
+
+export { NkForm }

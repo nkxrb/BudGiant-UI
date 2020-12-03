@@ -1,6 +1,6 @@
 {
   "name": "nkxrb-vue",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": false,
   "description": "This is a ui-lib,very easily use",
   "author": "nkxrb",
@@ -13,10 +13,11 @@
   "main": "lib/nkxrb-ui.umd.min.js",
   "dependencies": {
     "core-js": "3.6.5",
-    "element-ui": "2.14.1",
     "vue": "2.6.11"
   },
   "devDependencies": {
+    "element-ui": "2.14.1",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "3.4.9",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
