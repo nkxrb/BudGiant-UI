@@ -41,7 +41,8 @@ module.exports = {
         commonjs: 'vue',
         commonjs2: 'vue',
         amd: 'vue'
-      }
+      },
+      'element-ui': 'element-ui'
       // BMap: 'BMap'
     }
   },

@@ -1,57 +1,53 @@
 <template>
   <div style="line-height: 12px;text-align: left;">
-    <el-upload :auto-upload="autoUpload" :action="url" :headers="headers" :list-type="type" :limit="limit" :file-list="fileList" :on-success="uploadSuccess"
-               :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :before-upload="beforeAvatarUpload" :on-exceed="exceed">
+    <el-upload :file-list="fileList" :http-request="httpRequest" :on-success="uploadSuccess" :auto-upload="autoUpload" :list-type="type" :limit="limit" :action="'/upload'"
+               :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :before-upload="beforeAvatarUpload" :on-exceed="exceed" with-credentials>
       <i v-if="type==='picture-card'" class="el-icon-plus"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible" modal-append-to-body append-to-body>
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
     <div slot="tip" class="el-upload__tip" v-if="isError" style="line-height: 2px;color: red">{{errorMsg}}</div>
-    <div slot="tip" class="el-upload__tip" style="line-height: 10px;color: #a9a9a9"><span v-if="tips">{{tips}}</span><span>不超过{{maxsize}}KB</span></div>
+    <div slot="tip" class="el-upload__tip" style="line-height: 10px;color: #a9a9a9"><span v-if="tips">{{tips}}</span><span>图片大小不超过{{maxsize}}KB</span></div>
   </div>
 </template>
 <script>
-import { Dialog, Upload } from 'element-ui'
-import Vue from 'vue'
-
-Vue.use(Upload).use(Dialog)
 export default {
   name: 'EasyUploadImage',
   props: {
-    imgListStr: { type: String },
+    value: { type: String },
+    httpRequest: { type: Function },
     autoUpload: { type: Boolean, default: true },
-    url: { type: String, default: '/file/uploadImage' },
     type: { type: String, default: 'picture-card' },
     limit: { type: Number, default: 1 },
     tips: { type: String },
-    maxsize: { type: Number, default: 100 }
+    maxsize: { type: Number, default: 500 }
   },
   data: function () {
     return {
-      updateItems: {},
-      fileUrlArr: [],
       isError: false,
       errorMsg: '',
-      headers: { token: localStorage.getItem('123') },
       dialogImageUrl: '',
       dialogVisible: false
     }
   },
   computed: {
-    fileList: function () {
-      if (this.imgListStr) {
-        const newImgArr = []
-        const imgArr = this.imgListStr.split(',')
-        for (let i = 0; i < imgArr.length; i++) {
-          const imgUrl = imgArr[i]
-          if (imgUrl) {
-            const img = { url: imgUrl }
-            newImgArr.push(img)
-          }
+    urlArr: {
+      get: function () {
+        return this.value ? this.value.split(';') : []
+      },
+      set: function (val) {
+        this.$emit('input', val.join(';'))
+        console.log(this.value)
+      }
+    },
+    fileList: {
+      get: function () {
+        if (this.value) {
+          return this.value.split(';').map(item => ({
+            url: item
+          }))
         }
-        return newImgArr
-      } else {
         return []
       }
     }
@@ -63,22 +59,14 @@ export default {
       this.$children[0].$children[1].$el.style.display = 'none'
     },
     handleRemove (file, fileList) {
-      let removeUrl = file.url
-      if (file.response && file.response.rows && file.response.rows[0]) {
-        removeUrl = file.response.rows[0].url
-      }
-      if (this.fileUrlArr.indexOf(removeUrl) > -1) {
-        this.fileUrlArr.splice(this.fileUrlArr.indexOf(removeUrl), 1)
-        this.$emit('valueChanged', this.fileUrlArr.join(','))
-      }
+      this.urlArr = fileList.map(item => item.url)
     },
     uploadSuccess (res, file, fileList) {
-      if (res.rows && res.rows[0]) {
-        this.fileUrlArr.push(res.rows[0].url)
-        this.$emit('valueChanged', this.fileUrlArr.join(','))
-      } else {
-        this.$message.warning(res.msg)
+      // 将url替换成服务器对应的地址
+      if (res && res.url) {
+        file.url = res.url
       }
+      this.urlArr = fileList.map(item => item.url)
     },
     beforeAvatarUpload (file) {
       const isImage = file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'image/jpeg'
@@ -102,17 +90,18 @@ export default {
     }
   },
   watch: {
-    imgListStr: function (newV, oldV) {
-      if (newV) {
-        this.fileUrlArr = newV.split(',')
-      } else {
-        this.fileUrlArr = []
-      }
-      if (newV && newV.split(',').length === this.limit) {
-        this.$children[0].$children[1].$el.style.display = 'none'
-      } else {
-        this.$children[0].$children[1].$el.style.display = 'inline-block'
-      }
+    urlArr: {
+      handler: function (newV) {
+        // 判断是否达到限制个数
+        this.$nextTick(() => {
+          if (newV && newV.length >= this.limit) {
+            this.$children[0].$children[1].$el.style.display = 'none'
+          } else {
+            this.$children[0].$children[1].$el.style.display = 'block'
+          }
+        })
+      },
+      immediate: true
     }
   }
 }

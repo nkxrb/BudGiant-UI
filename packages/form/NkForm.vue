@@ -1,129 +1,156 @@
 <template>
-  <el-form ref="kForm" :disabled="disabled" :model="formData" label-width="150px">
-    <template v-for="(formProp,index) in formProps">
-      <el-col v-bind:key="index" :span="formProp.span || 12">
-        <el-form-item :label="formProp.label" :prop="formProp.prop" :rules="transFormRule(formProp)">
+  <el-dialog :visible.sync="isShow" :title="title" :width="width || '980px'" :close-on-click-modal="false" modal-append-to-body append-to-body custom-class="custon-dialog">
+    <el-form ref="NkForm" :disabled="disabled" :model="formData" :label-width="labelWidth || '150px'">
+      <template v-for="(field,index) in fields">
+        <el-col v-bind:key="index" :span="field.span || 12" v-show="!field.hidden">
+          <el-form-item :label="field.label" :prop="field.prop" :rules="transFormRule(field)">
 
-          <!--开关-->
-          <el-switch v-if="formProp.type==='switch'" v-model="formData[formProp.prop]" active-color="#13ce66" active-value="1" inactive-value="2"></el-switch>
+            <!--开关-->
+            <el-switch v-if="field.type==='switch'" v-model="formData[field.prop]" active-color="#13ce66" active-value="1" inactive-value="2"></el-switch>
 
-          <!--密码输入框-->
-          <template v-else-if="formProp.type==='password'">
-            <input type="password" style="width:0;height:0;float:left;visibility:hidden" />
-            <el-input show-password :disabled="formProp.disabled" v-model="formData[formProp.prop]" :maxlength="formProp.maxlength" show-word-limit
-                      :placeholder="formProp.placeholder"></el-input>
-          </template>
-
-          <!--数字输入框-->
-          <el-input-number v-else-if="formProp.type==='inputNumber'" :disabled="formProp.disabled" v-model="formData[formProp.prop]" :min="formProp.min" :max="formProp.max"
-                           :precision="formProp.precision" :placeholder="formProp.placeholder" style="width: 100%;" :controls="false"></el-input-number>
-
-          <!--单选框-->
-          <template v-else-if="formProp.type==='radio'">
-            <template v-if="formProp.dict">
-              <el-radio v-for="(dict,index) in formProp.dict" v-bind:key="index" v-model="formData[formProp.prop]" :label="dict.value">{{dict.label}}</el-radio>
+            <!--密码输入框-->
+            <template v-else-if="field.type==='password'">
+              <input type="password" style="width:0;height:0;float:left;visibility:hidden" />
+              <el-input show-password :disabled="field.disabled" v-model="formData[field.prop]" :maxlength="field.maxlength" show-word-limit :placeholder="field.placeholder">
+              </el-input>
             </template>
-            <template v-else>
-              <span style="color:red">单选框dict属性未定义</span>
+
+            <!--数字输入框-->
+            <el-input-number v-else-if="field.type==='inputNumber'" :disabled="field.disabled" v-model="formData[field.prop]" :min="field.min" :max="field.max"
+                             :precision="field.precision" :placeholder="field.placeholder" style="width: 100%;" :controls="false"></el-input-number>
+
+            <!--单选框-->
+            <template v-else-if="field.type==='radio'">
+              <template v-if="field.dict">
+                <el-radio v-for="(dict,index) in field.dict" v-bind:key="index" v-model="formData[field.prop]" :label="dict.value">{{dict.label}}</el-radio>
+              </template>
+              <template v-else>
+                <span style="color:red">单选框dict属性未定义</span>
+              </template>
             </template>
-          </template>
 
-          <!-- 时间 -->
-          <template v-else-if="formProp.type==='time'">
-            <el-time-picker style="width: 100%;" v-model="formData[formProp.prop]" :picker-options="{selectableRange: formProp.range || '00:00:00 - 23:59:59'}"
-                            placeholder="请选择时间点">
-            </el-time-picker>
-          </template>
+            <!-- 时间 -->
+            <template v-else-if="field.type==='time'">
+              <el-time-picker style="width: 100%;" value-format="HH:mm:ss" v-model="formData[field.prop]" :picker-options="{selectableRange: field.range || '00:00:00 - 23:59:59'}"
+                              placeholder="请选择时间点">
+              </el-time-picker>
+            </template>
 
-          <!-- 日期 -->
-          <template v-else-if="formProp.type==='date'">
-            <el-date-picker v-model="formData[formProp.prop]" type="date" placeholder="选择日期"></el-date-picker>
-          </template>
+            <!-- 日期 -->
+            <template v-else-if="field.type==='date'">
+              <el-date-picker v-model="formData[field.prop]" type="date" placeholder="选择日期"></el-date-picker>
+            </template>
 
-          <!--下拉选-->
-          <template v-else-if="formProp.type==='select'">
-            <el-select v-model="formData[formProp.prop]" clearable :placeholder="formProp.placeholder||'请选择'" style="width: 100%;">
-              <el-option v-for="dict in formProp.dicts" :key="dict.value" :label="dict.label" :value="dict.value+''"></el-option>
-            </el-select>
-          </template>
+            <!--下拉选-->
+            <template v-else-if="field.type==='select'">
+              <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'"
+                           @change="selectChange(formData[field.prop], field, formData)"></easy-select>
+            </template>
 
-          <!--上传图片-->
-          <template v-else-if="formProp.type==='image'">
-            <easy-upload-image :imgListStr="formData[formProp.prop]" :limit="formProp.limit" @valueChanged="valueChanged($event,formProp)" :tips="''">
-            </easy-upload-image>
-          </template>
+            <!--下拉选-->
+            <template v-else-if="field.type==='seltree'">
+              <easy-cascader v-model="formData[field.prop]" :options="field.options" :keys="field.keys" :placeholder="field.placeholder||'请选择'"></easy-cascader>
+            </template>
 
-          <!-- 富文本编辑器 -->
-          <template v-else-if="formProp.type==='editor'">
-            <easy-editor v-model="formData[formProp.prop]" :placeholder="formProp.placeholder"></easy-editor>
-          </template>
+            <!--上传图片-->
+            <template v-else-if="field.type==='image'">
+              <easy-upload-image v-model="formData[field.prop]" :httpRequest="field.httpRequest" :limit="field.limit" :maxsize="field.maxsize" :tips="field.tips">
+              </easy-upload-image>
+            </template>
 
-          <!-- textArea输入框 -->
-          <template v-else-if="formProp.type==='text'">
-            <el-input type="textarea" :disabled="formProp.disabled" v-model="formData[formProp.prop]" :placeholder="formProp.placeholder"></el-input>
-          </template>
+            <!-- 富文本编辑器 -->
+            <template v-else-if="field.type==='editor'">
+              <easy-editor v-model="formData[field.prop]" :placeholder="field.placeholder"></easy-editor>
+            </template>
 
-          <!--普通输入框-->
-          <el-input v-else :disabled="formProp.disabled" v-model="formData[formProp.prop]" :placeholder="formProp.placeholder"></el-input>
-        </el-form-item>
-      </el-col>
-    </template>
+            <!-- 地图 -->
+            <template v-else-if="field.type==='map'">
+              <easy-b-map :lat.sync="formData[field.lat]" :lng.sync="formData[field.lng]" :searchWord="formData[field.address]" :location="field.location" :ak="field.ak">
+              </easy-b-map>
+            </template>
 
-    <div style="clear: both"></div>
-    <div style="text-align: right">
-      <el-button type="primary" @click="submitForm">提交</el-button>
-    </div>
+            <!-- textArea输入框 -->
+            <template v-else-if="field.type==='text'">
+              <el-input type="textarea" :disabled="field.disabled" v-model="formData[field.prop]" :placeholder="field.placeholder"></el-input>
+            </template>
 
-  </el-form>
+            <!--普通输入框-->
+            <el-input v-else :disabled="field.disabled" v-model="formData[field.prop]" :placeholder="field.placeholder"></el-input>
+          </el-form-item>
+        </el-col>
+      </template>
+
+      <div style="clear: both"></div>
+      <div style="text-align: right">
+        <el-button type="primary" @click="submitForm" style="margin-right: 15px;">提交</el-button>
+        <el-button @click="close">取消</el-button>
+      </div>
+
+    </el-form>
+  </el-dialog>
 </template>
 <script>
-import { Form, FormItem, Input, InputNumber, Switch, Button, Option, Select, DatePicker } from 'element-ui'
+import { Dialog, Form, FormItem, Input, InputNumber, Switch, Button, DatePicker } from 'element-ui'
 import Vue from 'vue'
+import * as $validate from './validate.js'
 import EasyUploadImage from './EasyUploadImage'
 import EasyEditor from './EasyEditor'
+import EasySelect from './EasySelect'
+import EasyCascader from './EasyCascader'
+import EasyBMap from './EasyBMap'
 
-Vue.use(Form).use(FormItem).use(Input).use(InputNumber).use(Switch).use(Button).use(Option).use(Select).use(DatePicker)
+Vue.use(Dialog).use(Form).use(FormItem).use(Input).use(InputNumber).use(Switch).use(Button).use(DatePicker)
 
 export default {
   name: 'NkForm',
-  components: { EasyUploadImage, EasyEditor },
+  components: { EasyUploadImage, EasyEditor, EasySelect, EasyCascader, EasyBMap },
   props: {
+    visible: { type: Boolean, default: false },
     title: { type: String },
+    width: { type: [String, Number] },
+    labelWidth: { type: [String, Number] },
     data: { type: Object },
-    formProps: { type: Array, required: true },
+    fields: { type: Array, required: true },
+    filter: { type: Boolean },
     disabled: { type: Boolean }
   },
   computed: {
+    isShow: {
+      get: function () {
+        return this.visible
+      },
+      set: function (val) {
+        this.close(val)
+      }
+    },
     isAdd: function () {
       return !this.data || JSON.stringify(this.data) === '{}'
     }
   },
   data: function () {
     return {
-      formData: JSON.parse(JSON.stringify(this.data || '{}')),
-      dicts: {},
-      options: [],
-      subData: {}
+      formData: {}
     }
   },
   methods: {
-    valueChanged ($event, formProp, e) {
-      this.$set(this.formData, formProp.prop, $event)
-      if (formProp.changed) {
-        formProp.changed($event)
+    // 下拉选框值发生变化时触发
+    selectChange (value, field, formData) {
+      if (field.clear) {
+        const arr = field.clear.split(',')
+        arr.forEach(item => {
+          this.formData[item] = ''
+        })
       }
+
+      this.$emit('select-change', {
+        value: value,
+        field: field,
+        formData: formData
+      })
     },
-    // 多个属性更改
-    propsChanged ($event, formProp) {
-      if (formProp.props) {
-        for (let i = 0; i < formProp.props.length; i++) {
-          if ($event && $event[i]) {
-            this.$set(this.formData, formProp.props[i], $event[i])
-          } else {
-            this.$set(this.formData, formProp.props[i], '')
-          }
-        }
-      }
+    // 关闭弹窗
+    close () {
+      this.$emit('update:visible', false)
     },
     // 提交表单数据
     submitForm () {
@@ -133,19 +160,22 @@ export default {
         return
       }
 
-      const params = {}
-      // 过滤未修改过的属性
-      for (const k in this.formData) {
-        if (this.formData[k] !== this.data[k]) {
-          params[k] = this.formData[k]
+      let params = {}
+      // 若需要过滤配置，则过滤未修改过的属性
+      if (this.filter) {
+        for (const k in this.formData) {
+          if (this.formData[k] !== this.data[k]) {
+            params[k] = this.formData[k]
+          }
         }
+        // 如果是update操作，ID必传, 约定ID为fields的第一个元素
+        params[this.fields[0].prop] = this.data[this.fields[0].prop]
+      } else {
+        params = this.formData
       }
 
-      // 如果是update操作，ID必传, 约定ID为formProps的第一个元素
-      params[this.formProps[0].prop] = this.data[this.formProps[0].prop]
-
       // 校验表单数据
-      this.$refs.kForm.validate(valid => {
+      this.$refs.NkForm.validate(valid => {
         if (valid) {
           this.$emit('submit', params)
         } else {
@@ -154,27 +184,27 @@ export default {
       })
     },
     // 转换表单规则
-    transFormRule (formProp) {
+    transFormRule (field) {
       const newRuleArr = []
-      if (formProp && formProp.rules) {
-        for (let i = 0; i < formProp.rules.length; i++) {
-          if (typeof formProp.rules[i] === 'object') {
-            newRuleArr.push(formProp.rules[i])
-          } else if (typeof formProp.rules[i] === 'function') {
-            newRuleArr.push({ validator: formProp.rules[i], trigger: 'blur' })
-          } else if (typeof formProp.rules[i] === 'string') {
-            switch (formProp.rules[i]) {
+      if (field && field.rules) {
+        for (let i = 0; i < field.rules.length; i++) {
+          if (typeof field.rules[i] === 'object') {
+            newRuleArr.push(field.rules[i])
+          } else if (typeof field.rules[i] === 'function') {
+            newRuleArr.push({ validator: field.rules[i], trigger: 'blur' })
+          } else if (typeof field.rules[i] === 'string') {
+            switch (field.rules[i]) {
               case 'required':
                 newRuleArr.push({ required: true, message: '不能为空', trigger: 'blur' })
                 break
               case 'telephone':
-                newRuleArr.push({ validator: this.$validate.checkMobile, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkMobile, trigger: 'blur' })
                 break
               case 'phone':
-                newRuleArr.push({ validator: this.$validate.checkPhone, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkPhone, trigger: 'blur' })
                 break
               case 'email':
-                newRuleArr.push({ validator: this.$validate.checkEmail, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkEmail, trigger: 'blur' })
                 break
               default:
                 break
@@ -184,6 +214,17 @@ export default {
       }
 
       return newRuleArr
+    }
+  },
+  watch: {
+    data: {
+      handler: function (newV) {
+        if (newV) {
+          this.formData = Object.assign({}, newV)
+        } else {
+          this.formData = {}
+        }
+      }
     }
   }
 }
