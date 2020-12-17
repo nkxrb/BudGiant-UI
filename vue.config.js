@@ -10,7 +10,7 @@ module.exports = {
   // 服务请求配置
   devServer: {
     port: 9000,
-    proxy: 'http://localhost:25001' // 这会告诉开发服务器将任何未知请求 (没有匹配到静态文件的请求) 代理到http://localhost:27001
+    proxy: 'http://62.234.41.165:8091/' // 这会告诉开发服务器将任何未知请求 (没有匹配到静态文件的请求) 代理到http://localhost:27001
   },
   // 打包文件输出路径
   // outputDir: 'D:\\workspace_demo\\my-vue-lib\\dict',
@@ -49,6 +49,19 @@ module.exports = {
   productionSourceMap: false,
   // 扩展 webpack 配置，使 packages 加入编译
   chainWebpack: config => {
+    console.log('111111111', process.env.NODE_ENV)
+    if (process.env.NODE_ENV === 'production') {
+      config.externals = {
+        vue: {
+          root: 'Vue',
+          commonjs: 'vue',
+          commonjs2: 'vue',
+          amd: 'vue'
+        },
+        'element-ui': 'element-ui'
+      }
+    }
+
     config.module
       .rule('js')
       .include

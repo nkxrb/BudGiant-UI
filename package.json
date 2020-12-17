@@ -1,14 +1,14 @@
 {
   "name": "nkxrb-vue",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "private": false,
   "description": "This is a ui-lib,very easily use",
   "author": "nkxrb",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lib": "vue-cli-service build --target lib --name nkxrb-ui --dest lib packages/index.js"
+    "lib": "vue-cli-service build --target lib --mode production --name nkxrb-ui --dest lib packages/index.js"
   },
   "main": "lib/nkxrb-ui.umd.min.js",
   "dependencies": {
@@ -17,6 +17,7 @@
     "vue": "2.6.11"
   },
   "devDependencies": {
+    "axios": "^0.21.0",
     "vue-baidu-map": "^0.21.22",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "3.4.9",

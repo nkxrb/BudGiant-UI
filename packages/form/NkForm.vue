@@ -138,7 +138,7 @@ export default {
       if (field.clear) {
         const arr = field.clear.split(',')
         arr.forEach(item => {
-          this.formData[item] = ''
+          this.$set(this.formData, item, '')
         })
       }
 

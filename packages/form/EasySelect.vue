@@ -32,8 +32,8 @@ export default {
     }
   },
   methods: {
-    change () {
-      this.$emit('change')
+    change (val) {
+      this.$emit('change', val)
     },
     focus () {
       if (typeof this.options === 'function') {
