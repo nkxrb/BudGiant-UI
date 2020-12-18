@@ -79,6 +79,11 @@ export default {
       console.log('submit-item', item)
     },
     showForm () {
+      this.data = {
+        provinceId: 110000
+        // cityId: 110100,
+        // countyId: 0
+      }
       this.visible = true
     },
     selectChange (value, field, formData) {
@@ -94,7 +99,7 @@ export default {
     },
     getCitys (provinceId) {
       return new Promise((resolve, reject) => {
-        const result = this.$network.post(`/dict/area/getCity?provinceId=${provinceId}`, {}).then(res => {
+        const result = this.$network.post(`/dict/area/getCity?provinceId=${provinceId || ''}`, {}).then(res => {
           return res.data.map(item => ({ label: item.name, value: item.id }))
         })
         resolve(result)
@@ -102,7 +107,7 @@ export default {
     },
     getCountys (cityId) {
       return new Promise((resolve, reject) => {
-        const result = this.$network.post(`/dict/area/getCounty?cityId=${cityId}`, {}).then(res => {
+        const result = this.$network.post(`/dict/area/getCounty?cityId=${cityId || ''}`, {}).then(res => {
           if (res.data && res.data.length > 0) {
             return res.data.map(item => ({ label: item.name, value: item.id }))
           } else {

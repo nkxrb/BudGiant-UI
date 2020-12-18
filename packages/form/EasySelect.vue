@@ -31,6 +31,15 @@ export default {
       }
     }
   },
+  created () {
+    if (typeof this.options === 'function') {
+      this.options(this.filter).then(res => {
+        this.dictArr = res
+      })
+    } else {
+      this.dictArr = this.options || []
+    }
+  },
   methods: {
     change (val) {
       this.$emit('change', val)
