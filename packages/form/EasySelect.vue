@@ -1,6 +1,6 @@
 <template>
-  <el-select v-model="selectValue" @focus="focus" @change="change" clearable :placeholder="placeholder||'请选择'" style="width: 100%;">
-    <el-option v-for="item in dictArr" :key="item.value" :label="item.label" :value="item.value"></el-option>
+  <el-select v-model="selectValue" :multiple="multiple" @focus="focus" @change="change" clearable :placeholder="placeholder||'请选择'" style="width: 100%;">
+    <el-option v-for="item in dictArr" :key="item.value" :label="item.label" :value="item.value + ''"></el-option>
   </el-select>
 </template>
 <script>
@@ -12,6 +12,7 @@ export default {
   name: 'EasySelect',
   props: {
     placeholder: String,
+    multiple: Boolean,
     value: [String, Number],
     filter: [String, Number],
     options: { type: [Array, Function], required: true }
@@ -24,10 +25,21 @@ export default {
   computed: {
     selectValue: {
       get: function () {
-        return this.value
+        if (this.multiple) {
+          if (this.value) {
+            return this.value.split(',')
+          } else {
+            return []
+          }
+        }
+        return this.value ? this.value + '' : this.value
       },
       set: function (val) {
-        this.$emit('input', val)
+        if (this.multiple) {
+          this.$emit('input', val.join(','))
+        } else {
+          this.$emit('input', val)
+        }
       }
     }
   },

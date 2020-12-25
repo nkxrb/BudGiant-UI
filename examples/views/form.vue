@@ -22,7 +22,7 @@ export default {
         { prop: 'password', label: '密码', type: 'password' },
         { prop: 'inputNumber', label: '数字输入', type: 'inputNumber' },
         { prop: 'password', label: '密码', type: 'password' },
-        { prop: 'name', label: '普通输入框+校验', type: 'input', rules: ['required', 'email', 'telephone'] },
+        { prop: 'name', label: '普通输入框+校验', type: 'input', rules: ['required'] },
         {
           prop: 'radio',
           label: '单选框',
@@ -41,16 +41,33 @@ export default {
             { label: '选项2', value: 2 }
           ]
         },
-        { prop: 'provinceId', span: 8, label: '所属省份', type: 'select', options: this.getProvinces, clear: 'cityId,countryId', rules: ['required'] },
-        { prop: 'cityId', span: 8, label: '所属城市', type: 'select', options: this.getCitys, filter: 'provinceId', clear: 'countryId', rules: ['required'] },
-        { prop: 'countryId', span: 8, label: '所属区域', type: 'select', options: this.getCountys, filter: 'cityId', rules: ['required'] },
+        { prop: 'provinceId', span: 8, label: '所属省份', type: 'select', options: this.getProvinces, clear: 'cityId,countryId' },
+        { prop: 'cityId', span: 8, label: '所属城市', type: 'select', options: this.getCitys, filter: 'provinceId', clear: 'countryId' },
+        { prop: 'countryId', span: 8, label: '所属区域', type: 'select', options: this.getCountys, filter: 'cityId' },
+        {
+          prop: 'multiselect',
+          label: '多选下拉选',
+          type: 'multiselect',
+          options: [
+            { label: '选项1', value: 1 },
+            { label: '选项2', value: 2 },
+            { label: '选项3', value: 3 },
+            { label: '选项4', value: 4 }
+          ]
+        },
         {
           prop: 'seltree',
           label: '多层级下拉选',
           type: 'seltree',
           options: [
             { label: '选项1', value: 1 },
-            { label: '选项2', value: 2 }
+            {
+              label: '选项2',
+              value: 2,
+              children: [
+                { label: '选项2-1', value: 21 }
+              ]
+            }
           ]
         },
         { prop: 'address', label: '输入地址(地图会自动响应并返回经纬度)', type: 'input', span: 24 },
@@ -63,8 +80,7 @@ export default {
           type: 'date',
           span: 12,
           rules: [
-            'required',
-            function (rule, value, callback) { /** 自定义校验规则**/ }
+            // function (rule, value, callback) { /** 自定义校验规则**/ }
           ]
         },
         { prop: 'time', label: '时间（可指定范围）', range: '00:00:00 - 23:59:59', type: 'time', span: 12 },
@@ -80,8 +96,8 @@ export default {
     },
     showForm () {
       this.data = {
-        provinceId: 110000
-        // cityId: 110100,
+        provinceId: 110000,
+        multiselect: '3,2,4'
         // countyId: 0
       }
       this.visible = true

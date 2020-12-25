@@ -48,6 +48,12 @@
             </template>
 
             <!--下拉选-->
+            <template v-else-if="field.type==='multiselect'">
+              <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'" multiple
+                           @change="selectChange(formData[field.prop], field, formData)"></easy-select>
+            </template>
+
+            <!--下拉选-->
             <template v-else-if="field.type==='seltree'">
               <easy-cascader v-model="formData[field.prop]" :options="field.options" :keys="field.keys" :placeholder="field.placeholder||'请选择'"></easy-cascader>
             </template>
@@ -154,6 +160,7 @@ export default {
     },
     // 提交表单数据
     submitForm () {
+      debugger
       // 若用户并未进行操作，直接返回，不做任何操作
       if (JSON.stringify(this.formData) === JSON.stringify(this.data)) {
         this.close()
