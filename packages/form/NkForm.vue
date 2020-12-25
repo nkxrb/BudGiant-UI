@@ -188,23 +188,25 @@ export default {
       const newRuleArr = []
       if (field && field.rules) {
         for (let i = 0; i < field.rules.length; i++) {
+          const triggerType = field.type === 'select' ? 'change' : 'blur'
+
           if (typeof field.rules[i] === 'object') {
             newRuleArr.push(field.rules[i])
           } else if (typeof field.rules[i] === 'function') {
-            newRuleArr.push({ validator: field.rules[i], trigger: 'blur' })
+            newRuleArr.push({ validator: field.rules[i], trigger: triggerType })
           } else if (typeof field.rules[i] === 'string') {
             switch (field.rules[i]) {
               case 'required':
-                newRuleArr.push({ required: true, message: '不能为空', trigger: 'blur' })
+                newRuleArr.push({ required: true, message: '不能为空', trigger: triggerType })
                 break
               case 'telephone':
-                newRuleArr.push({ validator: $validate.checkMobile, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkMobile, trigger: triggerType })
                 break
               case 'phone':
-                newRuleArr.push({ validator: $validate.checkPhone, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkPhone, trigger: triggerType })
                 break
               case 'email':
-                newRuleArr.push({ validator: $validate.checkEmail, trigger: 'blur' })
+                newRuleArr.push({ validator: $validate.checkEmail, trigger: triggerType })
                 break
               default:
                 break

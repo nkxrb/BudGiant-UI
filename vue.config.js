@@ -34,24 +34,24 @@ module.exports = {
     // 输出文件名会被推导为 `subpage.html`。
     // subpage: 'src/subpage/main.js'
   },
-  configureWebpack: {
-    externals: {
-      vue: {
-        root: 'Vue',
-        commonjs: 'vue',
-        commonjs2: 'vue',
-        amd: 'vue'
-      },
-      'element-ui': 'element-ui'
-      // BMap: 'BMap'
-    }
-  },
+  // configureWebpack: {
+  //   externals: {
+  //     // vue: {
+  //     //   root: 'Vue',
+  //     //   commonjs: 'vue',
+  //     //   commonjs2: 'vue',
+  //     //   amd: 'vue'
+  //     // },
+  //     // 'element-ui': 'element-ui'
+  //     // BMap: 'BMap'
+  //   }
+  // },
   productionSourceMap: false,
   // 扩展 webpack 配置，使 packages 加入编译
   chainWebpack: config => {
-    console.log('111111111', process.env.NODE_ENV)
+    // 打包时去除vue、element-ui依赖
     if (process.env.NODE_ENV === 'production') {
-      config.externals = {
+      config.externals({
         vue: {
           root: 'Vue',
           commonjs: 'vue',
@@ -59,7 +59,7 @@ module.exports = {
           amd: 'vue'
         },
         'element-ui': 'element-ui'
-      }
+      })
     }
 
     config.module
