@@ -38,7 +38,7 @@
 
             <!-- 日期 -->
             <template v-else-if="field.type==='date'">
-              <el-date-picker v-model="formData[field.prop]" type="date" placeholder="选择日期"></el-date-picker>
+              <el-date-picker v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
             </template>
 
             <!--下拉选-->
