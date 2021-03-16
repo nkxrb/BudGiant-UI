@@ -38,7 +38,7 @@ export default {
       },
       set: function (val) {
         this.$emit('input', val.join(';'))
-        console.log(this.value)
+        this.$emit('change', val.join(';'))
       }
     },
     fileList: {

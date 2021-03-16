@@ -20,7 +20,9 @@ export default {
       fields: [
         { prop: 'switch', label: '开关', type: 'switch' },
         { prop: 'password', label: '密码', type: 'password' },
-        { prop: 'inputNumber', label: '数字输入', type: 'inputNumber' },
+        { prop: 'idCard', label: '身份证', type: 'input', rules: ['required', 'idcard'] },
+        { prop: 'remoteselect', label: '搜索选择', type: 'remoteselect', search: this.search },
+        { prop: 'inputNumber', label: '数字输入', type: 'inputNumber', rules: ['required', 'pfloat'] },
         { prop: 'password', label: '密码', type: 'password' },
         { prop: 'name', label: '普通输入框+校验', type: 'input', rules: ['required'] },
         {
@@ -84,7 +86,7 @@ export default {
           ]
         },
         { prop: 'time', label: '时间（可指定范围）', range: '00:00:00 - 23:59:59', type: 'time', span: 12 },
-        { prop: 'image', label: '上传图片', type: 'image', span: 12, limit: 1, httpRequest: function () { /** 自定义上传图片请求 */ }, maxsize: 500 },
+        { prop: 'image', label: '上传图片', type: 'image', span: 12, limit: 1, httpRequest: this.upload, maxsize: 500, rules: ['required'] },
         { prop: 'editor', label: '富文本编辑器', type: 'editor', span: 24 }
       ]
     }
@@ -101,6 +103,12 @@ export default {
         // countyId: 0
       }
       this.visible = true
+    },
+    upload (file) {
+      return new Promise((resolve, reject) => {
+        const res = { url: '/essss.png' }
+        resolve(res)
+      })
     },
     selectChange (value, field, formData) {
       // debugger
@@ -132,6 +140,21 @@ export default {
         })
         resolve(result)
       })
+    },
+    search (query, cb) {
+      const arr = [
+        { value: '1237' },
+        { value: '1236' },
+        { value: '1235' },
+        { value: '1234' },
+        { value: '1238' }
+      ]
+
+      const res = arr.filter(item => {
+        return item.value.indexOf(query) > -1
+      })
+
+      cb(res)
     }
   }
 }

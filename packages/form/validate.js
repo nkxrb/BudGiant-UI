@@ -65,6 +65,21 @@ export function isPhone (val) {
   return (/^[0-9-()（）]{7,18}$/).test(val)
 }
 
+// 验证是否是身份证号
+export function isIdCard (val) {
+  return (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/).test(val)
+}
+
+// 验证是否是正整数
+export function isPositiveInteger (val) {
+  return (/^\d+$/).test(val)
+}
+
+// 验证是否是正浮点数
+export function isPositiveFloat (val) {
+  return (/^\d+(\.\d+)?$/).test(val)
+}
+
 // 判断是否是object对象
 export function isObject (val) {
   return val && Object.prototype.toString.call(val) === '[object Object]'
@@ -160,6 +175,33 @@ export function checkNumber (rule, value, callback) {
     callback(new Error('请输入' + rule.numMin + '到' + rule.numMax))
   } else {
     callback()
+  }
+}
+
+// 验证数字
+export function checkIdCard (rule, value, callback) {
+  if (isIdCard(value) || !value) {
+    callback()
+  } else {
+    callback(new Error('请输入正确的身份证号'))
+  }
+}
+
+// 验证数字
+export function checkPositiveInteger (rule, value, callback) {
+  if (isPositiveInteger(value) || !value) {
+    callback()
+  } else {
+    callback(new Error('请输入正整数'))
+  }
+}
+
+// 验证数字
+export function checkPositiveFloat (rule, value, callback) {
+  if (isPositiveFloat(value) || !value) {
+    callback()
+  } else {
+    callback(new Error('请输入非负数'))
   }
 }
 

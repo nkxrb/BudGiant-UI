@@ -38,29 +38,40 @@
 
             <!-- 日期 -->
             <template v-else-if="field.type==='date'">
-              <el-date-picker v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
+              <el-date-picker style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
             </template>
 
-            <!--下拉选-->
+            <!-- 日期 -->
+            <template v-else-if="field.type==='rangedate'">
+              <el-date-picker style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
+            </template>
+
+            <!--下拉选(普通)-->
             <template v-else-if="field.type==='select'">
               <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'"
                            @change="selectChange(formData[field.prop], field, formData)"></easy-select>
             </template>
 
-            <!--下拉选-->
+            <!--下拉选（多选）-->
             <template v-else-if="field.type==='multiselect'">
               <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'" multiple
                            @change="selectChange(formData[field.prop], field, formData)"></easy-select>
             </template>
 
-            <!--下拉选-->
+            <!--下拉选（远程搜索）-->
+            <template v-else-if="field.type==='remoteselect'">
+              <easy-auto-complete v-model="formData[field.prop]" :search="field.search" :placeholder="field.placeholder||'请选择'" @change="selectChange"></easy-auto-complete>
+            </template>
+
+            <!--下拉选（层级）-->
             <template v-else-if="field.type==='seltree'">
               <easy-cascader v-model="formData[field.prop]" :options="field.options" :keys="field.keys" :placeholder="field.placeholder||'请选择'"></easy-cascader>
             </template>
 
             <!--上传图片-->
             <template v-else-if="field.type==='image'">
-              <easy-upload-image v-model="formData[field.prop]" :httpRequest="field.httpRequest" :limit="field.limit" :maxsize="field.maxsize" :tips="field.tips">
+              <easy-upload-image v-model="formData[field.prop]" :httpRequest="field.httpRequest" :limit="field.limit" :maxsize="field.maxsize" :tips="field.tips"
+                                 @change="imageUrlChange">
               </easy-upload-image>
             </template>
 
@@ -87,7 +98,7 @@
       </template>
 
       <div style="clear: both"></div>
-      <div style="text-align: right">
+      <div style="text-align: right" v-show="!disabled">
         <el-button type="primary" @click="submitForm" style="margin-right: 15px;">提交</el-button>
         <el-button @click="close">取消</el-button>
       </div>
@@ -99,7 +110,9 @@
 import { Dialog, Form, FormItem, Input, InputNumber, Switch, Button, DatePicker } from 'element-ui'
 import Vue from 'vue'
 import * as $validate from './validate.js'
+import { equalForObj } from '../utils/common.js'
 import EasyUploadImage from './EasyUploadImage'
+import EasyAutoComplete from './EasyAutoComplete'
 import EasyEditor from './EasyEditor'
 import EasySelect from './EasySelect'
 import EasyCascader from './EasyCascader'
@@ -109,7 +122,7 @@ Vue.use(Dialog).use(Form).use(FormItem).use(Input).use(InputNumber).use(Switch).
 
 export default {
   name: 'NkForm',
-  components: { EasyUploadImage, EasyEditor, EasySelect, EasyCascader, EasyBMap },
+  components: { EasyUploadImage, EasyAutoComplete, EasyEditor, EasySelect, EasyCascader, EasyBMap },
   props: {
     visible: { type: Boolean, default: false },
     title: { type: String },
@@ -139,9 +152,12 @@ export default {
     }
   },
   methods: {
+    imageUrlChange (val) { // 上传图片组件值更新，需手动触发下表单重新校验
+      this.$refs.NkForm.validate()
+    },
     // 下拉选框值发生变化时触发
     selectChange (value, field, formData) {
-      if (field.clear) {
+      if (field && field.clear) {
         const arr = field.clear.split(',')
         arr.forEach(item => {
           this.$set(this.formData, item, '')
@@ -156,17 +172,11 @@ export default {
     },
     // 关闭弹窗
     close () {
+      this.$refs.NkForm.clearValidate()
       this.$emit('update:visible', false)
     },
     // 提交表单数据
     submitForm () {
-      debugger
-      // 若用户并未进行操作，直接返回，不做任何操作
-      if (JSON.stringify(this.formData) === JSON.stringify(this.data)) {
-        this.close()
-        return
-      }
-
       let params = {}
       // 若需要过滤配置，则过滤未修改过的属性
       if (this.filter) {
@@ -181,10 +191,17 @@ export default {
         params = this.formData
       }
 
+      console.log('submit-formData===> ', this.formData)
+
       // 校验表单数据
       this.$refs.NkForm.validate(valid => {
         if (valid) {
-          this.$emit('submit', params)
+          // 若用户并未进行操作，直接返回，不做任何操作
+          if (equalForObj(this.formData, this.data)) {
+            this.$message.warning('对内容没有做任何修改，无需提交！')
+          } else {
+            this.$emit('submit', params)
+          }
         } else {
           this.$message.warning('信息验证不通过，请正确填写！')
         }
@@ -195,7 +212,7 @@ export default {
       const newRuleArr = []
       if (field && field.rules) {
         for (let i = 0; i < field.rules.length; i++) {
-          const triggerType = field.type === 'select' ? 'change' : 'blur'
+          const triggerType = ['select', 'image'].includes(field.type) ? 'change' : 'blur'
 
           if (typeof field.rules[i] === 'object') {
             newRuleArr.push(field.rules[i])
@@ -214,6 +231,15 @@ export default {
                 break
               case 'email':
                 newRuleArr.push({ validator: $validate.checkEmail, trigger: triggerType })
+                break
+              case 'idcard':
+                newRuleArr.push({ validator: $validate.checkIdCard, trigger: triggerType })
+                break
+              case 'pint':
+                newRuleArr.push({ validator: $validate.checkPositiveInteger, trigger: triggerType })
+                break
+              case 'pfloat':
+                newRuleArr.push({ validator: $validate.checkPositiveFloat, trigger: triggerType })
                 break
               default:
                 break
