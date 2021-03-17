@@ -60,7 +60,8 @@
 
             <!--下拉选（远程搜索）-->
             <template v-else-if="field.type==='remoteselect'">
-              <easy-auto-complete v-model="formData[field.prop]" :search="field.search" :placeholder="field.placeholder||'请选择'" @change="selectChange"></easy-auto-complete>
+              <easy-auto-complete v-model="formData[field.prop]" :field="field" :search="field.search" :placeholder="field.placeholder||'请选择'" @change="selectChange">
+              </easy-auto-complete>
             </template>
 
             <!--下拉选（层级）-->
@@ -167,7 +168,7 @@ export default {
       this.$emit('select-change', {
         value: value,
         field: field,
-        formData: formData
+        formData: formData || this.formData
       })
     },
     // 关闭弹窗

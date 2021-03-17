@@ -111,11 +111,11 @@ export default {
       })
     },
     selectChange (value, field, formData) {
-      // debugger
+      debugger
     },
     getProvinces () {
       return new Promise((resolve, reject) => {
-        const result = this.$network.post('/dict/area/getProvince', {}).then(res => {
+        const result = this.$network.post('/dict/getProvince', {}).then(res => {
           return res.data.map(item => ({ label: item.name, value: item.id }))
         })
         resolve(result)
@@ -123,7 +123,7 @@ export default {
     },
     getCitys (provinceId) {
       return new Promise((resolve, reject) => {
-        const result = this.$network.post(`/dict/area/getCity?provinceId=${provinceId || ''}`, {}).then(res => {
+        const result = this.$network.post(`/dict/getCity?provinceId=${provinceId || ''}`, {}).then(res => {
           return res.data.map(item => ({ label: item.name, value: item.id }))
         })
         resolve(result)
@@ -131,7 +131,7 @@ export default {
     },
     getCountys (cityId) {
       return new Promise((resolve, reject) => {
-        const result = this.$network.post(`/dict/area/getCounty?cityId=${cityId || ''}`, {}).then(res => {
+        const result = this.$network.post(`/dict/getCounty?cityId=${cityId || ''}`, {}).then(res => {
           if (res.data && res.data.length > 0) {
             return res.data.map(item => ({ label: item.name, value: item.id }))
           } else {

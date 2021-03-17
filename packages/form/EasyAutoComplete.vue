@@ -1,5 +1,5 @@
 <template>
-  <el-autocomplete v-model="selectValue" :fetch-suggestions="search" :placeholder="placeholder" @select="handleSelect"></el-autocomplete>
+  <el-autocomplete v-model="selectValue" :fetch-suggestions="search" :placeholder="placeholder" @select="handleSelect" style="width: 100%;"></el-autocomplete>
 </template>
 
 <script>
@@ -11,6 +11,7 @@ export default {
   name: 'EasySelect',
   props: {
     placeholder: String,
+    field: Object,
     value: [String, Number],
     search: { type: Function, required: true }
   },
@@ -26,7 +27,7 @@ export default {
   },
   methods: {
     handleSelect (item) {
-      this.$emit('change', item)
+      this.$emit('change', item, this.field)
     }
   }
 }
