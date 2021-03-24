@@ -213,7 +213,7 @@ export default {
       const newRuleArr = []
       if (field && field.rules) {
         for (let i = 0; i < field.rules.length; i++) {
-          const triggerType = ['select', 'image'].includes(field.type) ? 'change' : 'blur'
+          const triggerType = ['select', 'remoteselect', 'multiselect', 'seltree', 'image'].includes(field.type) ? 'change' : 'blur'
 
           if (typeof field.rules[i] === 'object') {
             newRuleArr.push(field.rules[i])
