@@ -1,5 +1,6 @@
 <template>
-  <el-cascader clearable v-model="selectValue" :options="categoryOptions" :show-all-levels="false" :props="cascaderProps" style="width: 100%;">
+  <el-cascader ref="easyCascader" clearable v-model="selectValue" :options="categoryOptions" @focus="focus" :show-all-levels="false" :props="cascaderProps" style="width: 100%;"
+               @change="change">
   </el-cascader>
 </template>
 <script>
@@ -11,9 +12,11 @@ export default {
   name: 'EasyCascader',
   props: {
     placeholder: String,
-    checkStrictly: { type: Boolean, default: true },
+    field: Object,
+    checkStrictly: { type: Boolean, default: false },
     emitPath: { type: Boolean, default: false },
     value: [String, Number],
+    filter: [String, Number],
     options: { type: [Array, Function], required: true }
   },
   data: function () {
@@ -37,18 +40,28 @@ export default {
       }
     }
   },
-  watch: {
-    options: {
-      handler: function (newV, oldV) {
-        if (typeof newV === 'function') {
-          newV().then(res => {
-            this.categoryOptions = res
-          })
-        } else {
-          this.categoryOptions = newV || []
-        }
-      },
-      immediate: true
+  created () {
+    if (typeof this.options === 'function') {
+      this.options(this.filter).then(res => {
+        this.categoryOptions = res
+      })
+    } else {
+      this.categoryOptions = this.options || []
+    }
+  },
+  methods: {
+    change (item) {
+      const nodes = this.$refs.easyCascader.getCheckedNodes()
+      this.$emit('change', nodes, this.field)
+    },
+    focus () {
+      if (typeof this.options === 'function') {
+        this.options(this.filter).then(res => {
+          this.categoryOptions = res
+        })
+      } else {
+        this.categoryOptions = this.options || []
+      }
     }
   }
 }

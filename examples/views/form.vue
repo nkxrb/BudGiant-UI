@@ -67,7 +67,7 @@ export default {
               label: '选项2',
               value: 2,
               children: [
-                { label: '选项2-1', value: 21 }
+                { label: '选项2-1', value: 21, extra: 'extraParams' }
               ]
             }
           ]
@@ -99,7 +99,8 @@ export default {
     showForm () {
       this.data = {
         provinceId: 110000,
-        multiselect: '3,2,4'
+        multiselect: '3,2,4',
+        seltree: 21
         // countyId: 0
       }
       this.visible = true

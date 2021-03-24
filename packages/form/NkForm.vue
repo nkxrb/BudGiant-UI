@@ -66,7 +66,8 @@
 
             <!--下拉选（层级）-->
             <template v-else-if="field.type==='seltree'">
-              <easy-cascader v-model="formData[field.prop]" :options="field.options" :keys="field.keys" :placeholder="field.placeholder||'请选择'"></easy-cascader>
+              <easy-cascader v-model="formData[field.prop]" :field="field" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'"
+                             :checkStrictly="field.checkStrictly" :emitPath="field.emitPath" @change="selectChange"></easy-cascader>
             </template>
 
             <!--上传图片-->
