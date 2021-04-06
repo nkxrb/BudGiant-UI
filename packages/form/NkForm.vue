@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="isShow" :title="title" :width="width || '980px'" :close-on-click-modal="false" modal-append-to-body append-to-body custom-class="custon-dialog">
-    <el-form ref="NkForm" :disabled="disabled" :model="formData" :label-width="labelWidth || '150px'">
+    <el-form ref="NkForm" :disabled="disabled" v-if="isShow" :model="formData" :label-width="labelWidth || '150px'">
       <template v-for="(field,index) in fields">
         <el-col v-bind:key="index" :span="field.span || 12" v-show="!field.hidden">
           <el-form-item :label="field.label" :prop="field.prop" :rules="transFormRule(field)">
@@ -31,31 +31,33 @@
 
             <!-- 时间 -->
             <template v-else-if="field.type==='time'">
-              <el-time-picker style="width: 100%;" value-format="HH:mm:ss" v-model="formData[field.prop]" :picker-options="{selectableRange: field.range || '00:00:00 - 23:59:59'}"
-                              placeholder="请选择时间点">
+              <el-time-picker :disabled="field.disabled" style="width: 100%;" value-format="HH:mm:ss" v-model="formData[field.prop]"
+                              :picker-options="{selectableRange: field.range || '00:00:00 - 23:59:59'}" placeholder="请选择时间点">
               </el-time-picker>
             </template>
 
             <!-- 日期 -->
             <template v-else-if="field.type==='date'">
-              <el-date-picker style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
+              <el-date-picker :disabled="field.disabled" style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期"
+                              :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
             </template>
 
             <!-- 日期 -->
             <template v-else-if="field.type==='rangedate'">
-              <el-date-picker style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期" :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
+              <el-date-picker :disabled="field.disabled" style="width: 100%;" v-model="formData[field.prop]" type="date" placeholder="选择日期"
+                              :value-format="field.format || 'yyyy-MM-dd'"></el-date-picker>
             </template>
 
             <!--下拉选(普通)-->
             <template v-else-if="field.type==='select'">
-              <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'"
-                           @change="selectChange(formData[field.prop], field, formData)"></easy-select>
+              <easy-select :disabled="field.disabled" v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]"
+                           :placeholder="field.placeholder||'请选择'" @change="selectChange(formData[field.prop], field, formData)"></easy-select>
             </template>
 
             <!--下拉选（多选）-->
             <template v-else-if="field.type==='multiselect'">
-              <easy-select v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'" multiple
-                           @change="selectChange(formData[field.prop], field, formData)"></easy-select>
+              <easy-select :disabled="field.disabled" v-model="formData[field.prop]" :options="field.options" :filter="formData[field.filter]"
+                           :placeholder="field.placeholder||'请选择'" multiple @change="selectChange(formData[field.prop], field, formData)"></easy-select>
             </template>
 
             <!--下拉选（远程搜索）-->
@@ -66,14 +68,14 @@
 
             <!--下拉选（层级）-->
             <template v-else-if="field.type==='seltree'">
-              <easy-cascader v-model="formData[field.prop]" :field="field" :options="field.options" :filter="formData[field.filter]" :placeholder="field.placeholder||'请选择'"
-                             :checkStrictly="field.checkStrictly" :emitPath="field.emitPath" @change="selectChange"></easy-cascader>
+              <easy-cascader :disabled="field.disabled" v-model="formData[field.prop]" :field="field" :options="field.options" :filter="formData[field.filter]"
+                             :placeholder="field.placeholder||'请选择'" :checkStrictly="field.checkStrictly" :emitPath="field.emitPath" @change="selectChange"></easy-cascader>
             </template>
 
             <!--上传图片-->
             <template v-else-if="field.type==='image'">
-              <easy-upload-image v-model="formData[field.prop]" :httpRequest="field.httpRequest" :limit="field.limit" :maxsize="field.maxsize" :tips="field.tips"
-                                 @change="imageUrlChange">
+              <easy-upload-image :disabled="field.disabled" v-model="formData[field.prop]" :httpRequest="field.httpRequest" :limit="field.limit" :maxsize="field.maxsize"
+                                 :tips="field.tips" @change="imageUrlChange">
               </easy-upload-image>
             </template>
 

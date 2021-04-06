@@ -43,7 +43,7 @@ export default {
             { label: '选项2', value: 2 }
           ]
         },
-        { prop: 'provinceId', span: 8, label: '所属省份', type: 'select', options: this.getProvinces, clear: 'cityId,countryId' },
+        { prop: 'provinceId', span: 8, label: '所属省份', type: 'select', disabled: true, options: this.getProvinces, clear: 'cityId,countryId' },
         { prop: 'cityId', span: 8, label: '所属城市', type: 'select', options: this.getCitys, filter: 'provinceId', clear: 'countryId' },
         { prop: 'countryId', span: 8, label: '所属区域', type: 'select', options: this.getCountys, filter: 'cityId' },
         {

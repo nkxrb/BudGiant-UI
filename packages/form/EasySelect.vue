@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="selectValue" :multiple="multiple" @focus="focus" @change="change" clearable :placeholder="placeholder||'请选择'" style="width: 100%;">
+  <el-select v-model="selectValue" :disabled="disabled" :multiple="multiple" @focus="focus" @change="change" clearable :placeholder="placeholder||'请选择'" style="width: 100%;">
     <el-option v-for="item in dictArr" :key="item.value" :label="item.label" :value="item.value + ''"></el-option>
   </el-select>
 </template>
@@ -12,6 +12,7 @@ export default {
   name: 'EasySelect',
   props: {
     placeholder: String,
+    disabled: Boolean,
     multiple: Boolean,
     value: [String, Number],
     filter: [String, Number],
